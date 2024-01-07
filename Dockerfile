@@ -2,6 +2,10 @@
 
 FROM python:3.11.2-slim-bullseye AS builder
 
+RUN cp -pv /etc/apt/sources.list /etc/apt/sources.list.bak && \
+    sed -i -e 's/deb.debian.org/mirrors.aliyun.com/g' -e 's/security.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list && \
+    apt update
+
 RUN apt-get update && \
     apt-get upgrade --yes
 
@@ -32,6 +36,10 @@ RUN python -m pip install . -c constraints.txt && \
 
 
 FROM python:3.11.2-slim-bullseye
+
+RUN cp -pv /etc/apt/sources.list /etc/apt/sources.list.bak && \
+    sed -i -e 's/deb.debian.org/mirrors.aliyun.com/g' -e 's/security.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list && \
+    apt update
 
 RUN apt-get update && \
     apt-get upgrade --yes
