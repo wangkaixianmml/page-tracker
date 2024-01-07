@@ -19,7 +19,8 @@ ENV PATH="$VIRTUALENV/bin:$PATH"
 
 COPY --chown=realpython pyproject.toml constraints.txt ./
 
-RUN python -m pip install --upgrade pip setuptools && \
+RUN python -m pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple && \
+    python -m pip install --upgrade pip setuptools && \
     python -m pip install --no-cache-dir -c constraints.txt ".[dev]"
 
 COPY --chown=realpython src/ src/
@@ -54,7 +55,8 @@ ENV PATH="$VIRTUALENV/bin:$PATH"
 
 COPY --from=builder /home/realpython/dist/page_tracker*.whl /home/realpython
 
-RUN python -m pip install --upgrade pip setuptools && \
+RUN python -m pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple && \
+    python -m pip install --upgrade pip setuptools && \
     python -m pip install --no-cache-dir page_tracker*.whl
 
 CMD ["flask", "--app", "page_tracker.app", "run", \
