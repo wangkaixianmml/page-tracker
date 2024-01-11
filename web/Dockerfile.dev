@@ -2,6 +2,10 @@
 
 FROM python:3.11.2-slim-bullseye
 
+RUN cp -pv /etc/apt/sources.list /etc/apt/sources.list.bak && \
+    sed -i -e 's/deb.debian.org/mirrors.aliyun.com/g' -e 's/security.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list && \
+    apt update
+
 RUN apt-get update && \
     apt-get upgrade --yes
 
@@ -15,7 +19,8 @@ ENV PATH="$VIRTUALENV/bin:$PATH"
 
 COPY --chown=realpython pyproject.toml constraints.txt ./
 
-RUN python -m pip install --upgrade pip setuptools && \
+RUN python -m pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple && \
+    python -m pip install --upgrade pip setuptools && \
     python -m pip install --no-cache-dir -c constraints.txt ".[dev]"
 
 COPY --chown=realpython src/ src/
